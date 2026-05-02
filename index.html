@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hugo Miguel Grilo — Preview</title>
+  <meta name="description" content="Preview do portfólio de Hugo Miguel Grilo com estética terminal, globo arrastável e secção de soft skills." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --background: hsl(220 26% 6%);
+      --foreground: hsl(150 15% 92%);
+      --card: hsl(220 24% 9%);
+      --primary: hsl(142 90% 55%);
+      --primary-glow: hsl(142 100% 65%);
+      --secondary: hsl(190 95% 55%);
+      --muted: hsl(220 20% 14%);
+      --muted-foreground: hsl(150 8% 65%);
+      --border: hsl(220 20% 16%);
+      --shadow-card: 0 10px 40px -10px hsl(220 50% 2% / 0.6);
+      --shadow-neon: 0 0 24px hsl(142 90% 55% / 0.35);
+      --radius: 1rem;
+      --container: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--foreground);
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, hsl(142 90% 55% / 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 50%, hsl(190 95% 55% / 0.05), transparent),
+        var(--background);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 1.5rem), var(--container));
+      margin: 0 auto;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .grid-bg {
+      background-image:
+        linear-gradient(hsl(142 90% 55% / 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, hsl(142 90% 55% / 0.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      inset-inline: 0;
+      z-index: 50;
+      background: rgba(6, 10, 14, 0.72);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid hsl(220 20% 16% / 0.9);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 4rem;
+      padding: 0 0.25rem;
+    }
+
+    .brand {
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .brand .muted { color: var(--muted-foreground); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      position: relative;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      color: var(--muted-foreground);
+      transition: color .2s ease;
+    }
+
+    .nav-links a.active,
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -0.45rem;
+      height: 1px;
+      background: var(--primary);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding-top: 4rem;
+    }
+
+    .hero > .grid-bg {
+      position: absolute;
+      inset: 0;
+      opacity: .4;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, transparent, var(--background));
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+
+    .hero-copy {
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 0.95rem;
+      border-radius: 999px;
+      border: 1px solid hsl(142 90% 55% / 0.3);
+      background: hsl(142 90% 55% / 0.05);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .whoami {
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .whoami .dollar { color: var(--muted-foreground); }
+
+    h1 {
+      margin: 0 0 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(3rem, 8vw, 6.2rem);
+      line-height: 0.95;
+      font-weight: 700;
+    }
+
+    .typing {
+      min-height: 2.5rem;
+      margin-bottom: 1.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+    }
+
+    .typing .arrow { color: var(--secondary); }
+
+    .cursor {
+      color: var(--primary);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .lead {
+      max-width: 860px;
+      margin: 0 auto 2.4rem;
+      color: var(--muted-foreground);
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+      padding: 1rem 1.2rem;
+      border-radius: 0.7rem;
+      border: 1px solid hsl(220 20% 16%);
+      background: transparent;
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      transition: .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: hsl(220 26% 6%);
+      border-color: transparent;
+      box-shadow: var(--shadow-neon);
+    }
+
+    .btn-outline {
+      border-color: hsl(142 90% 55% / 0.4);
+      color: var(--primary);
+      background: hsl(220 24% 9% / 0.4);
+    }
+
+    .down {
+      position: absolute;
+      left: 50%;
+      bottom: 2rem;
+      transform: translateX(-50%);
+      color: var(--muted-foreground);
+      font-family: 'JetBrains Mono', monospace;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes float { 50% { transform: translate(-50%, 8px); } }
+
+    section { padding: 5rem 0; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      color: var(--primary);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .section-title {
+      margin-top: .7rem;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+
+    .section-copy {
+      max-width: 56ch;
+      color: var(--muted-foreground);
+      line-height: 1.7;
+    }
+
+    .bits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, hsl(220 24% 9% / 0.9), hsl(220 24% 9% / 0.75));
+      border: 1px solid hsl(220 20% 16%);
+      border-radius: 1.25rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .bits-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .info-card {
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .info-card h3 {
+      margin: 0;
+      color: hsl(150 8% 65%);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .info-card strong {
+      display: block;
+      margin-top: .55rem;
+      font-size: 1.05rem;
+    }
+
+    .info-card p {
+      margin: .65rem 0 0;
+      color: var(--muted-foreground);
+      line-height: 1.6;
+      max-width: 600px;
+      text-align: left;
+    }
+
+    .tech-icons {
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      margin-top:.8rem;
+    }
+
+    .tech-badge {
+      position: relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:52px;
+      height:52px;
+      border-radius:14px;
+      background:hsl(220 20% 14%);
+      border:1px solid hsl(220 20% 16%);
+      box-shadow: inset 0 0 0 1px hsl(142 90% 55% / 0.06);
+      cursor: default;
+    }
+
+    .tech-badge::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%) translateY(6px);
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      padding: 0.5rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(4, 10, 12, 0.96);
+      border: 1px solid hsl(142 90% 55% / 0.35);
+      color: var(--foreground);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      line-height: 1;
+      box-shadow: var(--shadow-card);
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 20;
+    }
+
+    .tech-badge::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 4px);
+      transform: translateX(-50%) translateY(6px) rotate(45deg);
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(4, 10, 12, 0.96);
+      border-right: 1px solid hsl(142 90% 55% / 0.35);
+      border-bottom: 1px solid hsl(142 90% 55% / 0.35);
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 19;
+    }
+
+    .tech-badge:hover::before,
+    .tech-badge:hover::after,
+    .tech-badge:focus-visible::before,
+    .tech-badge:focus-visible::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .tech-badge svg { width:26px; height:26px; }
+
+    .globe-card {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+      padding: 1rem;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 45%, hsl(190 95% 55% / 0.07), transparent 35%),
+        linear-gradient(180deg, hsl(220 24% 9% / 0.95), hsl(220 24% 9% / 0.8));
+    }
+
+    .globe-wrap {
+      position: relative;
+      width: min(100%, 500px);
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      padding-left: 0;
+    }
+
+    #chartdiv {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .legend {
+      position: absolute;
+      left: 1rem;
+      bottom: 1rem;
+      border-radius: 1rem;
+      border: 1px solid hsl(220 20% 16%);
+      background: rgba(4, 10, 12, 0.86);
+      color: var(--muted-foreground);
+      padding: .8rem .95rem;
+      font-size: .75rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hint {
+      position:absolute;
+      right:1rem;
+      top:1rem;
+      border-radius:999px;
+      border:1px solid hsl(220 20% 16%);
+      background:rgba(4,10,12,.86);
+      color:var(--muted-foreground);
+      padding:.55rem .8rem;
+      font-size:.74rem;
+      font-family:'JetBrains Mono', monospace;
+    }
+
+    .soft-grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:.85rem;
+      margin-top:1.1rem;
+    }
+
+    .soft-pill {
+      padding:.9rem 1rem;
+      border-radius:1rem;
+      border:1px solid hsl(220 20% 16%);
+      background:hsl(220 20% 14% / 0.45);
+      color:var(--muted-foreground);
+    }
+
+    .contact-grid {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:1.2rem;
+    }
+
+    .contact-card { padding:1.2rem; }
+
+    .contact-links { display:grid; gap:.8rem; }
+
+    .contact-link {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      padding:1rem 1.05rem;
+      border-radius:1rem;
+      border:1px solid hsl(220 20% 16%);
+      background:hsl(220 24% 9% / 0.72);
+    }
+
+    .muted { color: var(--muted-foreground); }
+
+    .project-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .mac-window-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid hsl(220 20% 16%);
+      background: hsl(220 24% 8%);
+    }
+
+    .mac-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .mac-dot.red { background: #ff5f57; }
+    .mac-dot.yellow { background: #febc2e; }
+    .mac-dot.green { background: #28c840; }
+
+    .mac-window-title {
+      flex: 1;
+      text-align: center;
+      color: var(--muted-foreground);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    .mac-window-status {
+      color: var(--muted-foreground);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+    }
+
+    .terminal-body {
+      padding: 1.25rem;
+      background: linear-gradient(180deg, hsl(220 24% 9% / 0.98), hsl(220 24% 8% / 0.92));
+    }
+
+    .terminal-prompt {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86rem;
+      flex-wrap: wrap;
+    }
+
+    .prompt-user {
+      color: var(--primary);
+    }
+
+    .prompt-path {
+      color: var(--secondary);
+    }
+
+    .prompt-command {
+      color: var(--foreground);
+    }
+
+    .terminal-cursor {
+      color: var(--primary);
+      animation: blink 1s infinite;
+    }
+
+    .code-window {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      border: 1px solid hsl(220 20% 16%);
+      border-radius: 0.9rem;
+      overflow: hidden;
+      background: hsl(220 24% 7% / 0.9);
+    }
+
+    .line-numbers {
+      margin: 0;
+      padding: 1rem 0.85rem;
+      background: hsl(220 24% 7%);
+      color: hsl(150 8% 45%);
+      text-align: right;
+      user-select: none;
+      border-right: 1px solid hsl(220 20% 16%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.75;
+    }
+
+    .code-content {
+      margin: 0;
+      padding: 1rem 1.1rem;
+      white-space: pre-wrap;
+      color: hsl(150 15% 85%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.75;
+      overflow-x: auto;
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .project-tag {
+      padding: 0.5rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid hsl(142 90% 55% / 0.18);
+      background: hsl(142 90% 55% / 0.05);
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+    }
+
+    .project-description {
+      margin: 1rem 0 0;
+      color: var(--muted-foreground);
+      line-height: 1.7;
+      max-width: none;
+    }
+
+    footer {
+      padding: 1rem 0 3rem;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .bits-grid, .contact-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links { display:none; }
+      .bits-info, .soft-grid { grid-template-columns: 1fr; }
+      .globe-card { min-height: 420px; }
+      .mac-window-status { display: none; }
+      .code-window { grid-template-columns: 52px 1fr; }
+      .line-numbers, .code-content { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+     <a href="#inicio" class="brand"><span class="muted">&gt;_</span> <span id="brand-text"></span><span class="cursor">|</span></a>
+      <nav class="nav-links">
+        <a href="#inicio">./Início</a>
+        <a href="#bits">./Sobre</a>
+        <a href="#projeto">./Projetos</a>
+        <a href="#contactos">./Contactos</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="inicio">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <div class="badge">&lt;/&gt; disponível para novos projetos</div>
+        <p class="whoami"><span class="dollar">$</span> whoami</p>
+        <h1><span class="text-gradient">Hugo Miguel Grilo</span></h1>
+        <div class="typing"><span class="arrow">&gt;</span> <span id="type-target"></span><span class="cursor">▊</span></div>
+        <p class="lead">Sou estudante de Engenharia Informática e este portefólio reúne projetos e competências que demonstram o meu percurso académico e técnico.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#projeto">./ver_projeto</a>
+          <a class="btn btn-outline" href="https://mail.google.com/mail/?view=cm&fs=1&to=hugo.miguxl@gmail.com&su=Vamos%20trabalhar%20juntos%21" target="_blank" rel="noopener noreferrer">./contacta_me</a>
+        </div>
+      </div>
+    </div>
+    <div class="down">↓</div>
+  </section>
+
+  <section id="bits">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Overview</h2>
+        </div>
+      </div>
+
+      <div class="bits-grid">
+        <div class="bits-info">
+          <article class="panel info-card">
+            <h3>Tecnologias</h3>
+            <strong>Linguagens principais</strong>
+            <div class="tech-icons" aria-label="Símbolos das linguagens principais">
+              <div class="tech-badge" data-tooltip="C" aria-label="C"><svg viewBox="0 0 64 64" fill="none"><path d="M32 4 56 18v28L32 60 8 46V18L32 4Z" fill="#00599C"/><path d="M32 10 50 21v22L32 54 14 43V21L32 10Z" fill="#004482"/><path d="M39.5 40.8c-1.8 1.3-4.1 2.1-6.7 2.1-6.2 0-11.3-4.8-11.3-10.9s5.1-10.9 11.3-10.9c2.6 0 4.9.8 6.7 2.1l-3.2 3.5c-.9-.6-2.1-1-3.5-1-3.3 0-5.8 2.7-5.8 6.3s2.5 6.3 5.8 6.3c1.4 0 2.6-.4 3.5-1l3.2 3.5Z" fill="#fff"/></svg></div>
+              <div class="tech-badge" data-tooltip="Java" aria-label="Java"><svg viewBox="0 0 64 64" fill="none"><path d="M36 50c8 0 14-2 14-4.8 0-1.9-3-3.2-7.4-4.1 1.6 1 2.5 2 2.5 3.1 0 3.1-6 5.8-13.1 5.8S19 47.2 19 44.1c0-1.1.8-2.1 2.3-3-4.4.9-7.3 2.2-7.3 4C14 48 23.4 50 36 50Z" fill="#5382A1"/><path d="M35.6 15.2c3.3 3-3.2 5.4-3.2 8.6 0 2 1.4 3.1 2.8 4.1-2.5-1.1-4.9-2.8-4.9-5.6 0-4.3 6-5.2 5.3-7.1Z" fill="#E76F00"/><path d="M42 31.8c-1.7 1.1-4.6 2-8.3 2-3.2 0-6.2-.7-8.2-1.8 1.5 2.4 4.7 3.8 8.3 3.8 3.8 0 7-1.5 8.2-4Z" fill="#E76F00"/></svg></div>
+              <div class="tech-badge" data-tooltip="Python" aria-label="Python"><svg viewBox="0 0 64 64" fill="none"><path d="M32.1 8c-8.5 0-8 3.7-8 3.7v3.8H32v1.3H20.9S15 16.1 15 25c0 8.9 5.2 8.6 5.2 8.6h3.1v-4.4s-.2-5.2 5.1-5.2h8.8s5-.1 5-4.8v-8S42.9 8 32.1 8Zm-4.8 2.8a1.7 1.7 0 1 1 0 3.4 1.7 1.7 0 0 1 0-3.4Z" fill="#3776AB"/><path d="M31.9 56c8.5 0 8-3.7 8-3.7v-3.8H32v-1.3h11.1S49 47.9 49 39c0-8.9-5.2-8.6-5.2-8.6h-3.1v4.4s.2 5.2-5.1 5.2h-8.8s-5 .1-5 4.8v8S21.1 56 31.9 56Zm4.8-2.8a1.7 1.7 0 1 1 0-3.4 1.7 1.7 0 0 1 0 3.4Z" fill="#FFD43B"/></svg></div>
+              <div class="tech-badge" data-tooltip="Kotlin" aria-label="Kotlin"><svg viewBox="0 0 64 64" fill="none"><path d="M10 10h44L32 32 54 54H10V10Z" fill="url(#kgrad)"/><defs><linearGradient id="kgrad" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#7F52FF"/><stop offset=".5" stop-color="#FF4F9F"/><stop offset="1" stop-color="#FFB300"/></linearGradient></defs></svg></div>
+              <div class="tech-badge" data-tooltip="Assembly" aria-label="Assembly"><svg viewBox="0 0 64 64" fill="none"><rect x="14" y="14" width="36" height="36" rx="8" fill="#5eead4" fill-opacity="0.12" stroke="#5eead4" stroke-width="3"/><rect x="24" y="24" width="16" height="16" rx="2" fill="#5eead4"/><path d="M10 24h10M10 32h10M10 40h10M44 24h10M44 32h10M44 40h10M24 10v10M32 10v10M40 10v10M24 44v10M32 44v10M40 44v10" stroke="#5eead4" stroke-width="3" stroke-linecap="round"/></svg></div>
+            </div>
+          </article>
+
+          <article class="panel info-card">
+            <h3>Perfil</h3>
+            <strong>Engenharia Informática</strong>
+            <p>Estudante de Licenciatura em Engenharia Informática (2025-2028) na Universidade Lusófona de Lisboa, com formação em programação e desenvolvimento de software em linguagens como Kotlin e Java.</p>
+            <p>Os conhecimentos adquiridos em Assembly e sistemas digitais dão-me uma visão mais aprofundada sobre o funcionamento interno dos computadores, permitindo-me compreender melhor a relação entre software, memória e processador.</p>
+          </article>
+        </div>
+
+        <article class="panel globe-card">
+          <div class="hint">drag to rotate</div>
+          <div class="globe-wrap">
+            <div id="chartdiv" aria-label="Globo arrastável com Lisboa marcada"></div>
+          </div>
+          <div class="legend">Zoom in and enjoy the detail</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="soft-skills">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Soft skills</div>
+          <h2 class="section-title">Competências interpessoais</h2>
+        </div>
+      </div>
+      <div class="panel info-card">
+        <div class="soft-grid">
+          <div class="soft-pill">Comunicação clara</div>
+          <div class="soft-pill">Trabalho em equipa e colaboração multidisciplinar</div>
+          <div class="soft-pill">Pensamento crítico e resolução de problemas</div>
+          <div class="soft-pill">Proatividade e sentido de responsabilidade</div>
+          <div class="soft-pill">Adaptabilidade e aprendizagem contínua</div>
+          <div class="soft-pill">Gestão de tempo e prioridades</div>
+          <div class="soft-pill">Atenção ao detalhe e rigor</div>
+          <div class="soft-pill">Empatia e orientação ao utilizador/cliente</div>
+          <div class="soft-pill">Gestão de conflitos e capacidade de dar/receber feedback</div>
+          <div class="soft-pill">Resiliência e tolerância à pressão</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projeto">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Projeto em destaque</div>
+          <h2 class="section-title">Campo DEISIado</h2>
+        </div>
+      </div>
+
+      <article class="panel project-card">
+        <div class="mac-window-bar">
+          <span class="mac-dot red"></span>
+          <span class="mac-dot yellow"></span>
+          <span class="mac-dot green"></span>
+          <div class="mac-window-title">kotlin/Main.kt</div>
+          <div class="mac-window-status">read-only</div>
+        </div>
+
+        <div class="terminal-body">
+          <div class="terminal-prompt">
+            <span class="prompt-user">hugo@macbook</span>
+            <span class="prompt-path">~/CampoDEISIado</span>
+            <span class="prompt-command">$ cat Main.kt</span>
+            <span class="terminal-cursor">▊</span>
+          </div>
+
+          <div class="code-window">
+            <pre class="line-numbers"></pre>
+            <pre class="code-content" id="typed-code"></pre>
+          </div>
+
+          <div class="project-meta">
+            <span class="project-tag">Kotlin</span>
+          </div>
+
+          <p class="project-description">
+            Projeto académico inspirado no Campo Minado, com foco em lógica de jogo,
+            movimentos dentro de matrizes bidimensionais, leitura de ficheiros, validação de jogadas, litura de ficheiros, 
+            e organização modular do código.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="contactos">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Contactos</div>
+          <h2 class="section-title">Links principais</h2>
+        </div>
+      </div>
+      <div class="contact-grid">
+        <article class="panel contact-card">
+          <div class="contact-links">
+            <a class="contact-link" href="https://mail.google.com/mail/u/0/?fs=1&to=hugo.miguxl@gmail.com&su=Vamos+trabalhar+juntos!&tf=cm" target="_blank" rel="noopener noreferrer"><span>Email</span><strong>hugo.miguxl@gmail.com</strong></a>
+            <a class="contact-link" href="https://github.com/HGril0" target="_blank" rel="noopener noreferrer"><span>GitHub</span><strong>@HGril0</strong></a>
+            <a class="contact-link" href="https://www.linkedin.com/in/hugo-grilo-248a07256/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><strong>Perfil profissional Hugo Grilo</strong></a>
+            <a class="contact-link" href="file:///C:/Users/hugom/Downloads/hugo%20grilo-%20curriculo.pdf" target="_blank" rel="noopener noreferrer"><span>Curriculo</span><strong>CV</strong></a>
+            <a class="contact-link" href="#"><span>CV Video</span><strong>Video</strong></a>
+            <a class="contact-link" href="#"><span>Carta de Apresentação</span><strong></strong></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+  <p class="muted" style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">
+    <span style="color: var(--muted-foreground)">desenvolvido por</span>
+    <span class="text-gradient" style="font-weight: 600;"> Hugo Miguel Grilo</span>
+    <span style="color: var(--muted-foreground)"> · 2026</span>
+  </p>
+  </footer>
+
+  <script src="https://www.amcharts.com/lib/4/core.js"></script>
+  <script src="https://www.amcharts.com/lib/4/maps.js"></script>
+  <script src="https://www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+  <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+  <script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => link.classList.remove('active'));
+      const id = entry.target.getAttribute('id');
+      const activeLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+      if (activeLink) activeLink.classList.add('active');
+    }
+  });
+}, {
+  rootMargin: '-40% 0px -55% 0px', threshold: 0});
+sections.forEach(section => observer.observe(section));
+    const phrases = ['Pensar, programar, melhorar','Engenheiro Informático em construção', 'Apaixonado por resolver problemas', 'Do problema à solução','Curioso por natureza, programador por escolha','A transformar café em código'];
+    const typeTarget = document.getElementById('type-target');
+    let phraseIdx = 0, charIdx = 0, deleting = false;
+    function typeLoop() {
+      const current = phrases[phraseIdx];
+      if (!deleting) {
+        charIdx++;
+        typeTarget.textContent = current.slice(0, charIdx);
+        if (charIdx === current.length) {
+          deleting = true;
+          return setTimeout(typeLoop, 1200);
+        }
+      } else {
+        charIdx--;
+        typeTarget.textContent = current.slice(0, charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          phraseIdx = (phraseIdx + 1) % phrases.length;
+        }
+      }
+      setTimeout(typeLoop, deleting ? 45 : 85);
+    }
+    typeLoop();
+        const brandPhrase = 'Dev em development';
+    const brandTarget = document.getElementById('brand-text');
+    let brandIndex = 0;
+    function typeBrand() {
+      if (brandIndex < brandPhrase.length) {
+        brandTarget.textContent += brandPhrase[brandIndex++];
+        setTimeout(typeBrand, 85);
+      }
+    }
+    setTimeout(typeBrand, 400);
+const codeSnippet = `fun criaTerreno (terreno: Array<Array<Pair<String, Boolean>>>, mostraLegenda: Boolean = true, mostraTudo: Boolean = false): String{
+    val numLinhas = terreno.size
+    val numColunas = terreno[0].size
+    var resultado = ""
+    if (mostraLegenda) {
+        resultado += "    " + criaLegenda(numColunas) + "    \\n"
+    }
+    for (linha in 0 until numLinhas) { //percorre linha a linha
+        if (mostraLegenda) {
+            resultado += " \${linha + 1} "
+        }
+        for (coluna in 0 until numColunas) { //percorre colunas em cada linha
+            if (mostraTudo){
+                terreno[linha][coluna] = Pair(terreno[linha][coluna].first,true)
+            }
+        }
+    }
+    return resultado
+}`;
+const lines = codeSnippet.split('\n').length;
+document.querySelector('.line-numbers').textContent =
+  Array.from({ length: lines }, (_, i) => i + 1).join('\n');
+  
+    const typedCode = document.getElementById('typed-code');
+    let codeIndex = 0;
+
+    function typeCode() {
+      if (!typedCode) return;
+      if (codeIndex < codeSnippet.length) {
+        typedCode.textContent += codeSnippet.charAt(codeIndex);
+        codeIndex++;
+        setTimeout(typeCode, 16);
+      }
+    }
+
+    typeCode();
+
+    am4core.useTheme(am4themes_animated);
+
+    var chart = am4core.create("chartdiv", am4maps.MapChart);
+    chart.geodata = am4geodata_worldLow;
+    chart.projection = new am4maps.projections.Orthographic();
+
+    chart.panBehavior = "rotateLongLat";
+    chart.deltaLatitude = -20;
+    chart.deltaLongitude = -10;
+
+    chart.background.fill = am4core.color("#05070a");
+    chart.background.opacity = 1;
+
+    var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+    polygonSeries.useGeodata = true;
+
+    var polygonTemplate = polygonSeries.mapPolygons.template;
+    polygonTemplate.tooltipText = "{name}";
+    polygonTemplate.fill = am4core.color("#7ef8c3");
+    polygonTemplate.fillOpacity = 0.08;
+    polygonTemplate.stroke = am4core.color("#0a0f14");
+    polygonTemplate.strokeWidth = 0.5;
+    polygonTemplate.nonScalingStroke = true;
+    polygonTemplate.cursorOverStyle = am4core.MouseCursorStyle.pointer;
+
+    var hs = polygonTemplate.states.create("hover");
+    hs.properties.fill = am4core.color("#7ef8c3");
+    hs.properties.fillOpacity = 0.22;
+
+    var graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
+    graticuleSeries.mapLines.template.line.stroke = am4core.color("#00ff9f");
+    graticuleSeries.mapLines.template.line.strokeOpacity = 0.08;
+
+    var imageSeries = chart.series.push(new am4maps.MapImageSeries());
+    imageSeries.data = [{
+      latitude: 38.7223,
+      longitude: -9.1393,
+      title: "Lisboa"
+    }];
+
+    var imageTemplate = imageSeries.mapImages.template;
+    imageTemplate.propertyFields.latitude = "latitude";
+    imageTemplate.propertyFields.longitude = "longitude";
+
+    var cityDot = imageTemplate.createChild(am4core.Circle);
+    cityDot.radius = 5.2;
+    cityDot.fill = am4core.color("#00ff9f");
+    cityDot.stroke = am4core.color("#05070a");
+    cityDot.strokeWidth = 1.2;
+
+    var pulse = imageTemplate.createChild(am4core.Circle);
+    pulse.radius = 5.2;
+    pulse.fill = am4core.color("#00ff9f");
+    pulse.fillOpacity = 0.12;
+    pulse.stroke = am4core.color("#00ff9f");
+    pulse.strokeOpacity = 0.32;
+    pulse.strokeWidth = 1.2;
+
+    pulse.animate(
+      [
+        { property: "scale", from: 1, to: 2.1 },
+        { property: "opacity", from: 0.45, to: 0 }
+      ],
+      1600,
+      am4core.ease.sinOut,
+      true
+    );
+
+    var connector = imageTemplate.createChild(am4core.Line);
+    connector.stroke = am4core.color("#00ff9f");
+    connector.strokeOpacity = 0.7;
+    connector.strokeWidth = 1.2;
+    connector.nonScalingStroke = true;
+    connector.x1 = 0;
+    connector.y1 = 0;
+    connector.x2 = -36;
+    connector.y2 = -18;
+    connector.strokeDasharray = "4,4";
+
+    var labelBox = imageTemplate.createChild(am4core.Container);
+    labelBox.dx = -98;
+    labelBox.dy = -30;
+    labelBox.nonScaling = true;
+    labelBox.interactionsEnabled = false;
+    labelBox.layout = "horizontal";
+    labelBox.padding(8, 12, 8, 12);
+    labelBox.background = new am4core.RoundedRectangle();
+    labelBox.background.fill = am4core.color("#05070a");
+    labelBox.background.fillOpacity = 0.92;
+    labelBox.background.stroke = am4core.color("#00ff9f");
+    labelBox.background.strokeOpacity = 0.35;
+    labelBox.background.strokeWidth = 1;
+    labelBox.background.cornerRadius(999, 999, 999, 999);
+
+    var labelDot = labelBox.createChild(am4core.Circle);
+    labelDot.radius = 4.5;
+    labelDot.fill = am4core.color("#00ff9f");
+    labelDot.strokeOpacity = 0;
+
+    var cityLabel = labelBox.createChild(am4core.Label);
+    cityLabel.text = "{title}";
+    cityLabel.fill = am4core.color("#ffffff");
+    cityLabel.fontSize = 12;
+    cityLabel.fontFamily = "JetBrains Mono";
+    cityLabel.marginLeft = 8;
+    cityLabel.verticalCenter = "middle";
+  </script>
+</body>
+</html>
